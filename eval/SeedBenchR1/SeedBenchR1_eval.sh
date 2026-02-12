@@ -10,6 +10,7 @@ BATCH_SIZE=${BATCH_SIZE:-2}
 OUT_FREQ=${OUT_FREQ:-128}
 MAX_TOKENS=${MAX_TOKENS:-1024}
 NUM_WORK=${NUM_WORK:-32}
+ROOT_PATH=${ROOT_PATH:-'/path/to/Seed-Bench-R1_dir'}
 TOP_K=1
 MIN_P=0.0
 TEMPERATURE=0.0
@@ -58,7 +59,8 @@ for i in "${!DATA_PATHS[@]}"; do
         --temperature $TEMPERATURE \
         --num_frames $NUM_FRAMES \
         --start_frames $START_FRAMES \
-        --end_frames $END_FRAMES
+        --end_frames $END_FRAMES \
+        --root_dir "$ROOT_PATH"
 
     if [ $? -eq 0 ]; then
         echo "[$IDX/$TOTAL] Successfully completed: $OUT"

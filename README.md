@@ -6,7 +6,7 @@
       alt="TwiFF Paper on arXiv"
     />
   </a>
-  <!-- <a href="https://huggingface.co/Liu-Junhua/TwiFF-7B">
+  <a href="https://huggingface.co/Liu-Junhua/TwiFF-7B">
     <img 
         src="https://img.shields.io/badge/TwiFF-Model-yellow?logo=huggingface&logoColor=yellow" 
         alt="TwiFF Model"
@@ -23,15 +23,14 @@
         src="https://img.shields.io/badge/TwiFF--Bench-Dataset-yellow?logo=huggingface&logoColor=yellow" 
         alt="TwiFF-Bench Dataset"
     />
-  </a> -->
+  </a>
 </p>
 🌟  This is the official repository which contains the training and inference code for TwiFF.
-<!-- <p align="center"><img src="assets/teaser.webp" width="95%"></p> -->
 
 ## 📢 News
+- **Feb 12, 2026:** Our model checkpoint, training data and benchmark are now accessible at [Huggingface](https://huggingface.co/collections/Liu-Junhua/twiff).
 - **Feb 12, 2026:** Our paper is now accessible at [arxiv](https://arxiv.org/abs/2602.10675)
 - **Feb 12, 2026:** We have provided a training guideline in [TRAIN](./README.md#-train).
-<!-- - **Feb 12, 2026:** Our model checkpoint, training data and benchmark are now accessible at [Huggingface](https://huggingface.co/collections/Liu-Junhua/twiff). -->
 
 ## 🧠 Method
 
@@ -72,8 +71,8 @@ We present TwiFF, a unified model fine-tuned on a high-quality dynamic visual Ch
 3. **Store your test cases in `output/demo.jsonl` following the format below:**
 
    ```json
-   {"prompt": "fram1\n<image>\nI am making chocolate sauce for the cake, what should I do next?", "img_path": ["/path/to/image"]}
-   {"prompt": "fram1\n<image>\nHow should a photographer move the camera to better emphasize the flock of chickens on the grass?", "img_path": ["/path/to/image"]}
+   {"prompt": "frame_1\n<image>\nI am making chocolate sauce for the cake, what should I do next?", "img_path": ["/path/to/image"]}
+   {"prompt": "frame_1\n<image>\nHow should a photographer move the camera to better emphasize the flock of chickens on the grass?", "img_path": ["/path/to/image"]}
    ```
 
 4. **Start Inference**
@@ -105,7 +104,7 @@ We present TwiFF, a unified model fine-tuned on a high-quality dynamic visual Ch
 
    All video clips in TwiFF-2.7M are sourced from Panda-70M, please refer to Panda-70M offical data download instructions mentioned [here](https://github.com/snap-research/Panda-70M/tree/main/dataset_dataloading).
 
-   The original video height for all data in TwiFF-2.7M is 720px, therefore, the `download_size` in the [panda70m.yaml](https://github.com/snap-research/Panda-70M/blob/main/dataset_dataloading/video2dataset/video2dataset/configs/panda70m.yaml) should change to 720.
+   The original video height for all data in TwiFF-2.7M is 720px, please change the `download_size` in [panda70m.yaml](https://github.com/snap-research/Panda-70M/blob/main/dataset_dataloading/video2dataset/video2dataset/configs/panda70m.yaml) to 720.
 
 3. **Convert the downloaded dataset into JSONL format suitable for model training.**
    `video_think_dataset.py` reads the TwiFF-2.7M data from a JSONL file and directly extracts key frames from videos during the training, so you don't need to pre-store key frames for all samples. Please prepare your `TwiFF-2_7M_data.jsonl` file in the following format:
@@ -164,10 +163,10 @@ We provide the scripts for evaluating TwiFF-Bench in and Seed-Bench-R1 in [`./ev
 
    All video clips in TwiFF-Bench are sourced from Panda-70M, please refer to Panda-70M offical data download instructions mentioned [here](https://github.com/snap-research/Panda-70M/tree/main/dataset_dataloading).
 
-   The original video height for all data in TwiFF-Bench is 720px, therefore, the `download_size` in the [panda70m.yaml](https://github.com/snap-research/Panda-70M/blob/main/dataset_dataloading/video2dataset/video2dataset/configs/panda70m.yaml) should change to 720.
+   The original video height for all data in TwiFF-Bench is 720px, please change the `download_size` in the [panda70m.yaml](https://github.com/snap-research/Panda-70M/blob/main/dataset_dataloading/video2dataset/video2dataset/configs/panda70m.yaml) to 720.
 
-3. **Convert the downloaded dataset into JSONL format suitable for model training.**
-   `video_think_dataset.py` reads the TwiFF-2.7M data from a JSONL file and directly extracts key frames from videos during the training, so you don't need to pre-store key frames for all samples. Please prepare your `TwiFF-Bench.jsonl` file in the following format:
+3. **Convert the downloaded dataset into JSONL format suitable for evaluation.**
+   Evaluation code reads the TwiFF-Bench data from a JSONL file and directly extracts key frames from videos during the training, so you don't need to pre-store key frames for all samples. Please prepare your `TwiFF-Bench.jsonl` file in the following format:
 
    ```json
    {
@@ -190,7 +189,7 @@ We provide the scripts for evaluating TwiFF-Bench in and Seed-Bench-R1 in [`./ev
 
    </details>
 
- 4. **Generate TwiFF Response**
+4. **Generate TwiFF Response**
 
       ```bash
       cd eval/TwiFFBench
@@ -207,7 +206,22 @@ We provide the scripts for evaluating TwiFF-Bench in and Seed-Bench-R1 in [`./ev
       ./gen_TwiFF.sh
       ```
 
-      The `model_response` in `model_response_unscore.jsonl` is a list ['resoning_thought_0', '/path/to/img_1', 'resoning_thought_1', ..., 'answer']
+    <details>
+      <summary>Key meaning</summary>
+
+      - `MAX_ROUND`: maximum number of cycles for interleaved text and images
+      - `WORLD_SIZE`: number of inference workers (distribute evenly across all GPUs)
+      - `NUM_GPUS`: number of available GPUs
+      - `MODEL_DIR`: path to TwiFF checkpoint directory
+      - `CHECKPOINT_FILE`: path to TwiFF checkpoint file
+      - `CHECKPOINT_DIR`: path to TwiFF checkpoint directory
+      - `OUTPUT_DIR`: results directory
+      - `ROOT_PATH`: path to TwiFF video directory
+      - `QA_FILE`: benchmark file
+
+    </details>
+
+      The `model_response` in `model_response_unscore.jsonl` is a list ['resoning_thought_0', '/path/to/img_1.png', 'resoning_thought_1', ..., 'answer']
 
       The results directory structure is:
 
@@ -219,9 +233,9 @@ We provide the scripts for evaluating TwiFF-Bench in and Seed-Bench-R1 in [`./ev
             └── ...
       ```
 
- 5. **Response Evaluation**
+5. **Response Evaluation**
     Pelase modify `DATA_PATHS` and `OUT_PATHS` in [`gencot_vqa_eval.py`](./eval/TwiFFBench/benchmark_eval.sh) to the paths of your response and evaluation result files. Use the following scripts to get the score:
- 
+
       ```bash
       API='https://openrouter.ai/api/v1' \
       API_KEY='Put your APIKEY here' \
@@ -232,7 +246,7 @@ We provide the scripts for evaluating TwiFF-Bench in and Seed-Bench-R1 in [`./ev
       OUT_FREQ=32 \
       MAX_TOKENS=512 \
       NUM_WORK=16 \
-      eval/gencot/benchmark_eval.sh
+      eval/TwiFFBench/benchmark_eval.sh
       ```
 
     <details>
@@ -254,18 +268,123 @@ We provide the scripts for evaluating TwiFF-Bench in and Seed-Bench-R1 in [`./ev
 
 ### Seed-Bench-R1
 
-Code is available in `./eval/SeedBenchR1`. Instruction will comming soon.
+1. **Download the benchmark dataset**
+   Please download the original [Seed-Bench-R1](https://huggingface.co/datasets/TencentARC/SEED-Bench-R1) dataset, and use the validation spilt (`validation_L1.jsonl`, `validation_L2.jsonl
+`, `validation_L3.jsonl`).
 
+2. **Convert the downloaded dataset into JSONL format suitable for evaluation.**
+   Please unzip the images in Seed-Bench-R1 and prepare your `Seed-Bench-R1.jsonl` file in the following format:
+
+   ```json
+   {
+      "sample_id": "{sample_id}", 
+      "domain": "{domain}", 
+      "scenario": "{scenario}",
+      "task_goal": "{task_goal}",
+      "choice_a": "{choice_a}",
+      "choice_b": "{choice_b}",
+      "choice_c": "{choice_c}",
+      "choice_d": "{choice_d}",
+      "golden_choice_idx": "A/B/C/D",
+      "answer": "{answer}",
+      "task_start_frame": "{task_start_frame}",
+      "task_progress_metadata": ["metadata"],
+      "video_id": "{video_id}",
+      "video_source": "Ego4D/EpicKitchens",
+      "question": "{question}",
+      "video_basename": "{id}.mp4",
+      "current_observation_basename": "{id}.png",
+      "task_level": "L1/L2/L3",
+   }
+   ```
+
+3. **Generate TwiFF Response**
+
+      ```bash
+      cd eval/SeedBenchR1
+
+      MAX_ROUND=8 \
+      WORLD_SIZE=8 \
+      NUM_GPUS=8 \
+      CHECKPOINT_FILE="model.safetensors" \
+      CHECKPOINT_DIR="/path/to/TwiFF-7B" \
+      OUTPUT_DIR="/path/to/result_dir_SBR1" \
+      ROOT_DIR="/path/to/bench_dir" \
+      QA_FILE="/path/to/Seed-Bench-R1.jsonl" \
+      DIS_OPT=1 \
+      ./gen_SeedBenchR1_TwiFF.sh
+      ```
+
+    <details>
+      <summary>Key meaning</summary>
+
+      - `MAX_ROUND`: maximum number of cycles for interleaved text and images
+      - `WORLD_SIZE`: number of inference workers (distribute evenly across all GPUs)
+      - `NUM_GPUS`: number of available GPUs
+      - `MODEL_DIR`: path to TwiFF checkpoint directory
+      - `CHECKPOINT_FILE`: path to TwiFF checkpoint file
+      - `CHECKPOINT_DIR`: path to TwiFF checkpoint directory
+      - `OUTPUT_DIR`: results directory
+      - `ROOT_PATH`: path to Seed-Bench-R1 directory
+      - `QA_FILE`: benchmark file
+      - `DIS_OPT`: use open-ended question-answer (1: open-ended, 0: multiple-choice)
+
+    </details>
+
+      The `model_response` in `model_response_unscore.jsonl` is a list ['resoning_thought_0', '/path/to/img_1.png', 'resoning_thought_1', ..., 'answer']
+
+      The results directory structure is:
+
+      ```shell
+      result_dir_SBR1/
+      ├── model_response_unscore.jsonl
+      └── images/
+            ├── reasoning_1_image_2.png
+            └── ...
+      ```
+
+4. **Response Evaluation**
+    Pelase modify `DATA_PATHS` and `OUT_PATHS` in [`gencot_vqa_eval.py`](./eval/SeedBenchR1/SeedBenchR1_eval.sh) to the paths of your response and evaluation result files. Use the following scripts to get the score:
+
+      ```bash
+      API='https://openrouter.ai/api/v1' \
+      API_KEY='Put your APIKEY here' \
+      MODEL_NAME="openai/gpt-5.1" \
+      ROOT_PATH='/path/to/TwiFF-Bench_video' \
+      REQ_SIZE=16 \
+      BATCH_SIZE=1 \
+      OUT_FREQ=32 \
+      MAX_TOKENS=512 \
+      NUM_WORK=16 \
+      eval/SeedBenchR1/benchmark_eval.sh
+      ```
+
+    <details>
+      <summary>Key meaning</summary>
+
+      - `API`: api url
+      - `API_KEY`: your api key
+      - `MODEL_NAME`: judge model name
+      - `ROOT_PATH`: benchmark directory
+      - `REQ_SIZE`: number of async requests
+      - `BATCH_SIZE`: number of data samples preloaded per worker.
+      - `OUT_FREQ`: frequence write to jsonl
+      - `MAX_TOKENS`: judge max response tokens
+      - `NUM_WORK`: number of dataloader workers
+
+    </details>
+
+    The `score` in `model_response_score_gpt.jsonl` is a list containing one elements:[{ans_score}]
 <!-- ## 📊 Benchmarks -->
 
 ## ✍️ Citation
 
 ```bibtex
 @article{liu2026twiff,
-      title={TwiFF (Think With Future Frames): A Large-Scale Dataset for Dynamic Visual Reasoning}, 
-      author={Liu, Junhua and Wang, Zhangcheng and Han, Zhike and Wang, Ningli and Liang, Guotao and Kuang, Kun},
-      journal={arXiv preprint arXiv:2602.10675},
-      year={2026},
+         title={TwiFF (Think With Future Frames): A Large-Scale Dataset for Dynamic Visual Reasoning}, 
+         author={Liu, Junhua and Wang, Zhangcheng and Han, Zhike and Wang, Ningli and Liang, Guotao and Kuang, Kun},
+         journal={arXiv preprint arXiv:2602.10675},
+         year={2026},
 }
 ```
 

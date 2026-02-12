@@ -7,7 +7,7 @@ WORLD_SIZE=${WORLD_SIZE:-1}
 CHECKPOINT_FILE=${CHECKPOINT_FILE:-'model.safetensors'}
 CHECKPOINT_DIR=${CHECKPOINT_DIR:-'/path/to/checkpoint_dir'}
 OUTPUT_DIR=${OUTPUT_DIR:-'/path/to/output_dir'}
-ROOT_DIR=${ROOT_DIR:-'/path/to/benchmark_img_dir'}
+ROOT_PATH=${ROOT_PATH:-'/path/to/Seed-Bench-R1_dir'}
 QA_FILE=${QA_FILE:-'/path/to/qa_file'}
 SEED=${SEED:-1}
 DIS_OPT=${DIS_OPT:-0}
@@ -45,7 +45,7 @@ for ((rank=0; rank<WORLD_SIZE; rank++)); do
             --checkpoint_file "$CHECKPOINT_FILE" \
             --checkpoint_dir "$CHECKPOINT_DIR" \
             --output_dir "$OUTPUT_DIR" \
-            --root_dir "$ROOT_DIR" \
+            --root_dir "$ROOT_PATH" \
             --QA_file "$QA_FILE" \
             --seed $SEED \
             --visual_gen \
@@ -61,7 +61,7 @@ for ((rank=0; rank<WORLD_SIZE; rank++)); do
             --checkpoint_file "$CHECKPOINT_FILE" \
             --checkpoint_dir "$CHECKPOINT_DIR" \
             --output_dir "$OUTPUT_DIR" \
-            --root_dir "$ROOT_DIR" \
+            --root_dir "$ROOT_PATH" \
             --QA_file "$QA_FILE" \
             --seed $SEED \
             --visual_gen \
