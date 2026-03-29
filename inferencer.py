@@ -269,26 +269,26 @@ class InterleaveInferencer:
                      break
                 gen_context = self.update_context_text(gen_text, gen_context)
                 cfg_img_context = self.update_context_text(gen_text, cfg_img_context)
-                if '<img>' in gen_text:
-                    img = self.gen_image(
-                        image_shapes, 
-                        gen_context, 
-                        cfg_text_precontext=cfg_text_context, 
-                        cfg_img_precontext=cfg_img_context,
+                # if '<img>' in gen_text:
+                img = self.gen_image(
+                    image_shapes, 
+                    gen_context, 
+                    cfg_text_precontext=cfg_text_context, 
+                    cfg_img_precontext=cfg_img_context,
 
-                        cfg_text_scale=cfg_text_scale, 
-                        cfg_img_scale=cfg_img_scale, 
-                        cfg_interval=cfg_interval, 
-                        timestep_shift=timestep_shift, 
-                        num_timesteps=num_timesteps,
-                        cfg_renorm_min=cfg_renorm_min,
-                        cfg_renorm_type=cfg_renorm_type,
-                        enable_taylorseer=enable_taylorseer,
-                    )
-                    cfg_img_context = deepcopy(gen_context)
-                    gen_context = self.update_context_image(img, gen_context, vae=True)
-                    cfg_text_context = deepcopy(gen_context)
-                    output_list.append(img)
+                    cfg_text_scale=cfg_text_scale, 
+                    cfg_img_scale=cfg_img_scale, 
+                    cfg_interval=cfg_interval, 
+                    timestep_shift=timestep_shift, 
+                    num_timesteps=num_timesteps,
+                    cfg_renorm_min=cfg_renorm_min,
+                    cfg_renorm_type=cfg_renorm_type,
+                    enable_taylorseer=enable_taylorseer,
+                )
+                cfg_img_context = deepcopy(gen_context)
+                gen_context = self.update_context_image(img, gen_context, vae=True)
+                cfg_text_context = deepcopy(gen_context)
+                output_list.append(img)
                 curr_round=curr_round+1
             if curr_round>=max_round:
                 print("Think out of the round limit!")
